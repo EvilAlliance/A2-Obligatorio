@@ -76,16 +76,8 @@ int main(){
             int key;
             std::cin >> key;
             std::cin >> b.name;
-            unsigned long long oldCount  = p->count;
-
-            Book* b1 = p->get(key);
 
             p->set(key, b);
-            if(b1 == NULL && oldCount == p->count){
-                std::cout << "[Error] Added incorrectclid oldcount and count are the same when the key does not exist";
-            }else if (b1 != NULL  && oldCount + 1 == p->count) {
-                std::cout << "[Error] Added incorrectclid oldcount + 1 and count are the same when the key does exist";
-            }
         }else if(op.compare("FIND") == 0){
             int key;
             std::cin >> key;
