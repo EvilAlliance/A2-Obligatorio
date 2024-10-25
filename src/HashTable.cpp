@@ -128,7 +128,6 @@ public:
                 c->value = value;
                 return;
             }else if(c->state == 2){
-
                 for (unsigned long long i = i + 1; i < len; i++) {
                     Cell<K, V>* c2 = &items[(f + s*i) % len] ;
                     if(c2->state == 1 && equal(c2->key, key)){
@@ -144,6 +143,7 @@ public:
                 c->state = 1;
                 count++;
                 if(insertHandler != NULL) insertHandler(key, &value, NULL, data);
+                return;
             }
         }
 
@@ -176,7 +176,7 @@ public:
                 c->state = 2;
                 count--;
                 if(removeHandler != NULL) removeHandler(key, c->value, data);
-                return c->value;
+                return &c->value;
             }
         }
         return NULL;
