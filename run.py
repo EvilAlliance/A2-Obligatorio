@@ -41,7 +41,7 @@ def main():
         print('ERROR: Numero de ejercicio no ingresado')
         exit(1)
     
-    dir_list = os.listdir(f"Prueba/ejercicio{ej}")
+    dir_list = sorted(os.listdir(f"Prueba/ejercicio{ej}"))
     c = filter(inFilter, dir_list)
     for s in c:
         runTest(ej, s.split(".")[0])
