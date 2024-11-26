@@ -1,6 +1,7 @@
 import sys
 import os
 import subprocess
+import time
 
 def inFilter(s):
     return s.find("in") != -1
@@ -13,9 +14,16 @@ def runTest(ej, file):
         print(f"ERROR: ejercicio{ej}.cpp could not compile")
         print(f"STDERROR:\n {process.stderr}")
         exit(1)
+            
+    start = time.perf_counter()
+
     print(f"Ejecutado " +"./a.out " + "< " + f"Prueba/ejercicio{ej}/{file}.in.txt " + "> " + f"Prueba/ejercicio{ej}/{file}.myOut.txt")
     with open(f"Prueba/ejercicio{ej}/{file}.in.txt") as input_file, open(f"Prueba/ejercicio{ej}/{file}.myOut.txt", "w") as output_file:
         process = subprocess.run(["./a.out"], stdin=input_file, stdout=output_file)
+
+    end = time.perf_counter()
+    print(f"Duro {(end - start):.6f} seconds")
+
     print(f"Ejecutado " +"diff " + f"Prueba/ejercicio{ej}/{file}.myOut.txt " + f"Prueba/ejercicio{ej}/{file}.out.txt ")
     process = subprocess.run(["diff", f"Prueba/ejercicio{ej}/{file}.myOut.txt", f"Prueba/ejercicio{ej}/{file}.out.txt"])
     if process.returncode != 0:

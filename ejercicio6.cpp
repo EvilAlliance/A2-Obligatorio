@@ -67,7 +67,7 @@ void updatePath(SparseGraph<City>* g, DijkstraResult<City>* p, City dest){
         Edge* e = itOrg->next();
 
         if(e->to == indexDest) {
-            e->cost *=2;
+            e->cost *= 2;
             break;
         }
     }
@@ -80,7 +80,7 @@ void updatePath(SparseGraph<City>* g, DijkstraResult<City>* p, City dest){
         Edge* e = itDest->next();
 
         if(e->to == indexOrg) {
-            e->cost *=2;
+            e->cost *= 2;
             break;
         }
     }
@@ -127,7 +127,7 @@ int main()
 
         std::cin >> org.id;
         std::cin >> dest.id;
-        std::cin >> cost;
+       std::cin >> cost;
 
         g->addEdge(org, dest, cost);
         g->addEdge(dest, org, cost);
@@ -152,6 +152,7 @@ int main()
     DijkstraResult<City>* dDeactivateEntity = gd->dijkstra({.id = idStart});
     updatePath(gd, dDeactivateEntity, {.id = idEntity});
     DijkstraResult<City>* dGetTeam = gd->dijkstra({.id = idEntity});
+    updatePath(gd, dGetTeam, {.id = idTeam});
     DijkstraResult<City>* dGoToPoint = gd->dijkstra({.id = idTeam});
 
     long long dCost = dDeactivateEntity->dist[indexIdEntity] + dGetTeam->dist[indexIdTeam] + dGoToPoint->dist[indexIdPoint];
