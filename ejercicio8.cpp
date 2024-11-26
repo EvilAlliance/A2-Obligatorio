@@ -1,7 +1,5 @@
 #include <algorithm>
 #include <cassert>
-#include <random>
-#include <string>
 #include <iostream>
 #include <limits>
 
@@ -18,8 +16,8 @@ struct City{
 };
 
 struct Result{
-    unsigned long long a;
-    unsigned long long b;
+    City a;
+    City b;
 
     double dist;
 
@@ -66,10 +64,10 @@ double dist2(City a, City b){
     return d;
 }
 
-Result lessDist(City* c, Result a, Result b){
+Result lessDist(Result a, Result b){
     if(a.dist < b.dist) return a;
     if(a.dist > b.dist) return b;
-    if(c[a.a].p + c[a.b].p > c[b.a].p + c[b.b].p) return a;
+    if(a.a.p + a.b.p > b.a.p + b.b.p) return a;
     return b;
 }
 
@@ -101,41 +99,51 @@ void quicksortY(City* c, unsigned long long count){
     _quicksortY(c, 0, count - 1, count);
 }
 
-void searchBetterResult(City* c, Result* r, unsigned long long low, unsigned long long high){
-    for (unsigned long long i = low; i <= high; i++) {
-        Result a {
-            .a = r->a,
-            .b = i,
-            .dist =dist(c[r->a], c[i]),
-       };
+void  _quicksortX(City* c, unsigned long long low, unsigned long long high, unsigned long long count){
+    if(low >= high || high >= count || low < 0) return;
 
-       Result b {
-           .a = i,
-           .b = r->b,
-           .dist = dist(c[r->b], c[i]),
-       };
+    City pivot = c[high];
+    unsigned long long j = low;
 
-        *r = lessDist(c, a, lessDist(c, b, *r));
+    for (unsigned long long i  = low; i <= high - 1; i++) {
+        if(c[i].coord.x <= pivot.coord.x){
+            City temp = c[i];
+            c[i] = c[j];
+            c[j] = temp;
+
+            j++;
+        }
     }
+
+    City temp = c[j];
+    c[j] = c[high];
+    c[high] = temp;
+
+    _quicksortX(c, low, j - 1, count);
+    _quicksortX(c, j + 1, high, count);
 }
 
-Result searchNearest(City* c, unsigned long long  index, unsigned long long low, unsigned long long high){
+void quicksortX(City* c, unsigned long long count){
+    _quicksortX(c, 0, count - 1, count);
+}
+
+Result searchNearest(City* c, City  index, unsigned long long low, unsigned long long high){
     Result r = {
         .a = index,
-        .b = low,
-        .dist = dist(c[index], c[low])
+        .b = c[low],
+        .dist = dist(index, c[low])
     };
 
     for (unsigned long long i = low + 1; i <= high; i++) {
-        double d = dist(c[index], c[i]);
+        double d = dist(index, c[i]);
 
         Result a {
             .a = index,
-            .b = i,
+            .b = c[i],
             .dist = d
         };
 
-        r = lessDist(c, r, a);
+        r = lessDist(r, a);
     }
 
     return r;
@@ -157,23 +165,35 @@ void adjustRange(City* c, unsigned long long low, unsigned long long mid, unsign
 }
 
 Result _divideConquer(City* c, unsigned long long low, unsigned long long high, unsigned long long count){
-    if(low == high)
-        return {
-            .a = low,
-            .invalid = false,
-            .partial = true
-        };
-
     if(high - low == 1) 
         return {
-            .a = low,
-            .b = high,
+            .a = c[low],
+            .b = c[high],
 
             .dist = dist(c[low], c[high]),
 
             .invalid = false,
             .partial = false,
         };
+
+    if(high - low == 2) 
+        return lessDist({
+            .a = c[low],
+            .b = c[low + 1],
+
+            .dist = dist(c[low], c[low + 1]),
+
+            .invalid = false,
+            .partial = false,
+        },{
+            .a = c[low + 1],
+            .b = c[high],
+
+            .dist = dist(c[low + 1], c[high]),
+
+            .invalid = false,
+            .partial = false,
+        });
 
     unsigned long long mid = low + ((high - low) / 2);
 
@@ -182,91 +202,44 @@ Result _divideConquer(City* c, unsigned long long low, unsigned long long high, 
 
     if(a.partial)
        a = searchNearest(c, a.a, mid+1 , high);
-    /*else*/
-    /*    searchBetterResult(c, &a, mid + 1, high);*/
 
     if(b.partial)
         b = searchNearest(c, b.a, low, mid);
-    /*else*/
-    /*    searchBetterResult(c, &b, low, mid);*/
 
-    Result r = lessDist(c, a, b);
+    Result r = lessDist(a, b);
 
-    /*double realDist = dist(c[r.a], c[r.b]);*/
-    unsigned long long realDist = max(abs(c[r.a].coord.y - c[r.b].coord.y), abs(c[r.a].coord.x - c[r.b].coord.x));
-    /*unsigned long long realDist = max(abs(c[r.a].coord.y - c[r.b].coord.y), (long long) 1);*/
+    unsigned long long realDist = r.dist;
 
-    unsigned long long newL;
-    unsigned long long newH;
-    adjustRange(c, low, mid, high, realDist, &newL, &newH);
+    unsigned long long length = (high - low) + 1;
+    unsigned long long realIndex = 0;
+    City* cx = new City[length]();
 
-    /*for(unsigned long long i = newL; i < newH; i++){*/
-    /*    for (unsigned long long j = newL; j < newH; j++) {*/
-    /*        if(i == j) continue;*/
-    /**/
-    /*        Result temp = {*/
-    /*            .a = i,*/
-    /*            .b = j,*/
-    /*            .dist = dist(c[i], c[j]),*/
-    /*        };*/
-    /**/
-    /*        r = lessDist(c, r, temp);*/
-    /*    }*/
-    /*}*/
+    for (unsigned long long i = 0; i <= length; i++) {
+        if(abs(c[mid].coord.x - c[low + i].coord.x) > realDist) continue;
 
-    if(newL != low || newH != high)
-        r = lessDist(c, r ,_divideConquer(c, newL, newH, count));
-    else{
-        for(unsigned long long i = newL; i < newH; i++){
-            for (unsigned long long j = i + 1; j < newH; j++) {
-                if(abs(c[i].coord.y - c[j].coord.y) > realDist) break;
+        cx[realIndex] = c[low + i];
 
-                unsigned long long newRealDist = max(abs(c[i].coord.y - c[j].coord.y), abs(c[i].coord.x - c[j].coord.x));
-
-                if(newRealDist <= realDist){
-                    Result temp = {
-                        .a = i,
-                        .b = j,
-                        .dist = dist(c[i], c[j]),
-                    };
-
-                    if(temp.dist <= r.dist)
-                        r = lessDist(c, r, temp);
-                        
-
-                   if(newRealDist < realDist){
-                        realDist = newRealDist;
-                        adjustRange(c, low, mid, high, newRealDist, &newL, &newH);
-                        if(newL != low || newH != high)
-                            goto afterFor;
-                    }
-                }
-            }
-        }
-
-    afterFor:
-        if(newL == low && newH == high) return r;
-
-        r = lessDist(c, r ,_divideConquer(c, newL, newH, count));
+        realIndex++;
     }
 
-    /*else {*/
-        /*std::cout << "newL = "  << newL << " && newH = " << newH << " && diff = " << newH - newL << "\n";*/
-    /*    for(unsigned long long i = newL; i < newH; i++){*/
-    /*        for (unsigned long long j = i + 1; j < newH; j++) {*/
-    /*            if(abs(c[i].coord.y - c[j].coord.y) > realDist) break;*/
-    /*            if(i == j) continue;*/
-    /**/
-    /*            Result temp = {*/
-    /*                .a = i,*/
-    /*                .b = j,*/
-    /*                .dist = dist(c[i], c[j]),*/
-    /*            };*/
-    /**/
-    /*            r = lessDist(c, r, temp);*/
-    /*        }*/
-    /*    }*/
-    /*}*/
+    quicksortX(cx, realIndex);
+
+
+    for(unsigned long long i = 0; i <= realIndex; i++){
+        for (unsigned long long j = i + 1; j <= realIndex; j++) {
+            if(abs(c[i].coord.x - c[j].coord.x) > realDist) break;
+            if(i == j) continue;
+
+            Result temp = {
+                .a = c[i],
+                .b = c[j],
+                .dist = dist(c[i], c[j]),
+            };
+
+            r = lessDist(r, temp);
+        }
+    }
+
     return r;
 }
 
@@ -279,8 +252,8 @@ void printCity(City a){
 }
 
 void print(City* c, Result r){
-    City a = c[r.a];
-    City b = c[r.b];
+    City a = r.a;
+    City b = r.b;
 
     if(a.coord.x < b.coord.x) {
         printCity(a);

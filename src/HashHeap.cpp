@@ -193,28 +193,7 @@ public:
     levitate(*i);
   }
 
-  V remove(K k) {
-    unsigned long long *ip = h->get(k);
-    if(ip == NULL) return NULL;
-
-    h->remove(k);
-
-    unsigned long long i = *ip;
-
-    assert(comparePiority(items[i], k));
-
-    HashHeap_Cell<K, V> c = items[i];
-    items[i] = items[--count];
-
-    h->set(items[i].piority, i);
-
-    sink(i);
-
-    if (removeHandler != NULL)
-      removeHandler(k, c.value, data);
+  void reset(){
+    count = 0;
   }
-
-    void reset(){
-        count = 0;
-    }
 };
