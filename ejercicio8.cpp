@@ -1,6 +1,7 @@
 #include <algorithm>
 #include <cassert>
 #include <iostream>
+#include <iterator>
 #include <limits>
 
 using namespace std;
@@ -210,35 +211,39 @@ Result _divideConquer(City* c, unsigned long long low, unsigned long long high, 
 
     unsigned long long realDist = r.dist;
 
-    unsigned long long length = (high - low) + 1;
-    unsigned long long realIndex = 0;
+    unsigned long long newL = low;
+    unsigned long long newH = high;
+
+    adjustRange(c, low, mid, high, realDist, &newL, &newH);
+
+    unsigned long long length = (newH - newL) + 1;
     City* cx = new City[length]();
 
-    for (unsigned long long i = 0; i <= length; i++) {
-        if(abs(c[mid].coord.x - c[low + i].coord.x) > realDist) continue;
-
-        cx[realIndex] = c[low + i];
-
-        realIndex++;
+    for (unsigned long long i = 0; i < length; i++) {
+        cx[i] = c[newL + i];
     }
 
-    quicksortX(cx, realIndex);
+    quicksortX(cx, length);
 
 
-    for(unsigned long long i = 0; i <= realIndex; i++){
-        for (unsigned long long j = i + 1; j <= realIndex; j++) {
-            if(abs(c[i].coord.x - c[j].coord.x) > realDist) break;
+    for(unsigned long long i = 0; i < length; i++){
+        for (unsigned long long j = i + 1; j < length; j++) {
+            if(abs(cx[i].coord.x - cx[j].coord.x) > realDist) break;
             if(i == j) continue;
 
             Result temp = {
-                .a = c[i],
-                .b = c[j],
-                .dist = dist(c[i], c[j]),
+                .a = cx[i],
+                .b = cx[j],
+                .dist = dist(cx[i], cx[j]),
             };
 
             r = lessDist(r, temp);
+
+            realDist = min(realDist, (unsigned long long) temp.dist);
         }
     }
+
+    delete[] cx;
 
     return r;
 }
