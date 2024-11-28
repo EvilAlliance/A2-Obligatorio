@@ -13,24 +13,19 @@ La solución de este ejerció es indicado por la misma letra que indica el uso d
 
 #### ADD
 
-La acción ADjD tiene que ser de orden O(log(N)) este comando crea el libro y recibe los datos por el stdin y los almacena en el dicho libro y lo inserta utilizando el método set del AVL.
-Set llama a un método recursivo que insertá el libro en la raíz si no tiene y utilizando la función compareKey que en este caso es constante para saber si es menor, igual o mayor, si es igual se modifica este nodo, por ahora todo esto sería constante, si no dependiendo de si es menor o mayor va a la rama izquierda o derecha, repitiéndose constantemente hasta que suceda la situación mencionada al principio.
-Para tener la cuenta de los libros habilitados y deshabilitados hay una funcion insertHandler que mantiene la cuneta que en este caso seria constante.
+La accion ADD creo el objeto Book y lo inserto en el AVL con el metodo clasico de insercion con O(log(n)), ademas hay un metodo que es llamado cuando la insercion sucede para mantener la constancia de libros habilitaodos y deshabilitados
 
 #### FIND
 
-La acción FIND recibe una key por el stdin y la busca en el árbol con el método get que este busca la key en los nodos de dicho árbol de tal forma que va a la rama izquierda si la key buscada es menor a la del nodo y va a la rama derecha si este es mayor, si es igual entonces encontró la key buscada. Esto se repite hasta encontrarla, logrando un O(log(N)).
-Después se imprime si se encontró el libro el nombre y si está habilitado o no, si no informa que no se encontró, todo esto es constante.
+La accion FIND consigue la key y busca en el AVL con su respectivo algoritmo de busquedao asegurando la un O(log(N))
 
 #### TOGGLE
 
-La accion TOGGLE recibe la key por el srdin y la busca utilizando el metodo get explicado en la accion anterior. Informa si no lo encotro y si lo encuontra deshabilitado lo habilita y viceversa.
-Esto tambien mantiene la constancia de la misma forma que la insercion
+La accion TOGGLE consigue la key y busca en el AVL con su respectivo algoritmo de busquedao asegurando la un O(log(N)) y ademas de eso le modifica los datos pedidos tomando constancia de los libros habilitaods y deshabilitados
 
 #### COUNT
 
-La acción COUNT es constante porque extrae todos los datos de una estructura que mantiene la constancia de los libros deshabilitados y habilitados.
-Esta estructura es la que mantiene la constancia y es la misma que se menciona en las acciones ADD y TOGGLE.
+La accion COUNT consigue el count directamente de la estructura que lleva cuenta de cuantos nodos tiene permitiendo que su O(1).
 
 ## Ejercicio 02
 
@@ -42,23 +37,19 @@ La solución de este ejerció es indicado por la misma letra que indica el uso d
 
 #### ADD
 
-La acción ADD tiene que ser de orden O(1) promedio este comando crea el libro y recibe los datos por el stdin y los almacena en el dicho libro y lo inserta utilizando el método set de la tabla hash.
-Esta funcion almacena la informacion de la siguiente forma, se calcula el hash de la key y se calcula un segundo hash por la estrategia de colision doble hash esto asegura que sea de orden constatnte, pero hay un caso que se no encuetra un lugar despues de n intentos se va a rehashear y instentar de vuelta. Este rehash tambien sucede cundo el factor de carga llega a ser de un 70%.
-Este tambien tiene un insertHandler de igual forma que el ejercicio anterior para mantener la constancia de libros habilitod y deshabilitados.
+La accion ADD arma el objeto y la inserta en el HashTable con el metodo de seteado de orden constante e igual que el ejericio anterios hay una funcin que mantiene el estado de libros habilitados o no;
 
 #### FIND
 
-La acción FIND recibe una key por el stdin y busca el elemento utilizando el método get, este funciona de una forma similar al set, calcula el primer hash y el segundo hash, buscando la misma key, esto frena cuando la encuentra o cuando encuentra una celda vacía, logrando un orden constante.
+La accin FIND utiliza el metodo clasico de HashTable permitiendo  una busqueda de orden constante promedio.
 
 #### TOGGLE
 
-La acción TOGGLE recibe la key por el stdin y la busca utilizando el método get explicado en la acción anterior. Informa si no lo encontró y si lo encuentra deshabilitado lo habilita y viceversa.
-Esto también mantiene la constancia de la misma forma que la inserción.
+La accion TOGGLE consigue la key y busca en el HashMap con su respectivo algoritmo de busquedao asegurando la un O(1) promedio y ademas de eso le modifica los datos pedidos tomando constancia de los libros habilitaods y deshabilitados
 
 #### COUNT
 
-La acción COUNT es constante porque extrae todos los datos de una estructura que mantiene la constancia de los libros deshabilitados y habilitados.
-Esta estructura es la que mantiene la constancia y es la misma que se menciona en las acciones ADD y TOGGLE.
+La accion COUNT es de orden constante tambien porque el HashTable toma constancia de la cantidad de elementos que tiene guardados.
 
 ## Ejercicio 3
 
@@ -68,19 +59,12 @@ Al tener varios objetos repetidos y elegir el que tiene menor precio se usuaria 
 
 ### Justificación de Orden de Cada Acción
 
-La justificacion del HashTable ya ta hecha en el ejericio 2 
+#### Primera Etapa
 
-#### Push
-La accion PUSH recibe el elemento y lo inserta en el en el primer lugar disponible y lo flota, estadisticamente en un heap ya ordenado seria O(1) caso promedo (estadisticamente) y O(log(N)) ya que puede ir a desde el ultimo al primero (es log(N) porque el heap es la representacion de un arbol en un array).
+Utilizo el metodo de insercion del heap siendo o(1) promedio y peor caso O(log(N))
 
-#### Pop
-La accion POP devuelve el valor y sobre escribe el primer lugar por el ultimo elemento y lo hunde, por la msima razon que el flotar es promedio O(1) y O(log(N), la unica diferencia seria que uno trae el elemento hacia el indice 0 y el otro lo lleva al indice count.
-
-#### Levitate
-Seria la accion de flotar que fue explicada en el Push
-
-#### Sink
-Seria la accion de hundir que fue explicada en el Pop
+#### Segunda Etapa
+Utilizo  el metodo pop de Heap para extraer el elemento con la mayot prioridad y seteo ese ebjeto en el HashTable para saber que ya lo compre.
 
 ## Ejercicio 4
 
@@ -91,19 +75,19 @@ Se utilizo el heap para mantener el un order y un hashmap para ver si el pedido 
 
 #### I
 
-La accion "I", construyelos objetos necesario con los datos entregado por stdin. Utilizando push de HashHeap que es muy similar a push Heap del ejercicio 3, la unica diferencia es que cuando inserte el el objeto guardo la key y el indice donde se encuentra y levitate guarda los indices nuevos de las key utilizado la funcion set de HashTable explicada en el ejericio 2 con un O(1) promedio mantendio el mismo orden indicado en el ejercio 2 del push (O(log(N))). Luego utiliza set de Hashtable explicado en el ejericio 2.
+La accion I utiliza el metodo del HashHeap  que seria O(1) promedio ademas de setear con el metodo de HashTable el indice que esta ubicado manteniendo la constancia del indice despues de hundir y flotar. Ademas setea esa key en un HashTable para saber si ese pediddo ya fue entregado
 
 #### E
 
-La accion "E" utilizando el id remueve el dato relacionado con el en la HashHeap. Esto lo logra usando el metodo de remove de HashTable, funciona igual que el set, lo unica diferencia es que en vez de buscar un lugar libre, busca a la key indicada, y le cambia un dato para que quede "borrado" (order O(1) promedio).
+La accion "E" elmina el peidido entregado del HashTable con su metodo de eliminacion con O(1) promedio
 
 #### C
 
-Con el id recicibido armo un obeto para buscar la celda del HashHeap para modificar la key menos el id, y luego rebalancea la celda. Consigue la celda con el metodo getCell de HashHeap y utiliza el metodo de set HashTable para conseguir el indice y devuelve la celda en ese lugar. Luego podes rebalancear la celda pasandole el objeto de pioridad para conseguir el indice donde se encuentra y lo hunde  y lo flota. Para conseguir el indece se utiliza el metodo get de HashTable explicado en el ejericio 2, y levitate y sink utiliza set de HashTable para mantener constancia del indice de cada uno manteneido su O(1) promedio estadisticamente.
+La accion C consigue el elemento del HashHeap con el metodo get con un orden constante porque usa la HashTable dentro de la misma para conseguir su indeice, y cambia sus valores y rebalance esa celda con la nueva prioridad con flotar y hundir. ademas consigo el mismo objeto y lo cambio en el HashTable con el  mismo metodo get con un orden costante.
 
 #### Resolucion
 
-El print utiliza get de HashTable que fue explicado en el ejericio 2 y el pop de HashHeap que es my similar a el de Heap simplemente elimina la key del HashTable dentro del HashHeap.
+El print utiliza get de HashTable y el pop de HashHeap que es my similar a el de Heap simplemente elimina la key del HashTable dentro del HashHeap.
 
 ## Ejercicio 5
 
@@ -115,16 +99,11 @@ Se armo dos SparseGraph (Grafo Disperso) de misiones y cuidades. Se hace un dijk
 
 #### Dijkstra
 
-Le pasas por parametro el vertice de origen y busca el indice de donde esta ubicado en el array de verices y aristas utilizando get de HashTable (explicado en el ejercicio 2), creo un Heap (todos los ordenes explicados en el ejercicio 2) en el cual le inserto 0 ademas del indice del vertice y empieza la a ver si ya se llego a sus vertices adyacentes y si no a llegado y el costo es menor al que ya se habia guardado lo agrega al Heap, si ya lo visito lo saltea, O((V + E)log(V)). Todo esto lo hace mientra guarda los resultoado y los devuelve.
+Algoritmo clasico con un O((V + E)log(V))
 
 #### Orden Topologico
 
-- Hago un array que contiene su la incidencia de cada vetice.
-- Los que tienen incidencia 0 los agrego en un Heap con pioridad siendo la distancia de la cuidades origen.
-- Mientras haya algun elemento en el heap lo siguente se repite
-    - Consigo el index y imprimo el camino para llegar a la mision (Hago la mision).
-    - Reseteo el Heap esto deberia ser orden constante (lo discuti en clase practica) porque al ser un grafo disperso ya son un 30% de aritas de los posibles (misiones) y luego tenemos que tener en cuenta que el Heap contiene los de incidencia cero, se le pone la distancia nueva del nuevo lugar de origen.
-    - Resto la incidencia y si es cero lo agrego al heap
+Algoritmo clasico con un O(V + E) reteo el heap y inserto los mismos valor con prioridad actualiza y se puede consider O(1) porque la cantidad de elementos que hay es despreciable, ademas de inprimir el camino para llegar que tambies es despreciable
 
 #### findVertex
 
@@ -157,6 +136,37 @@ Si imaginamos la barra como un array ordenado y se hace un binary search, nada m
 Teniedo todas las cuidades se ordenan por la coordenada y y se hace un divide and conquer tomando la mitad del area y se evalua cada lado hasta que haya una cantidad manejable obteniedo la mejor distancia efectiva en esa zona y caso, luego se compara el de ambos lados y se toma el mas chico, esto se repite hasta conseguir un resultado. Este no conseguira el mejor resultado porque cerca de la linea divisoria puede haber dos cuidades mas cerca (esas dos cuidades son separadas por la linea divisoria).
 El metodo de resolucion de la linea divisoria es aumentar el low y reducir el high achicando la zona, este cumpla la condicion que las de la zona se encuentran cierta distancia de la ciudad central. Paso 2, al principio lo que hicia es recorrer devuelta la funcion con esta nueva zona, pero hay caso borde que seria que generas una nueva linea y no logras achicar la zona de la forma mencionada anteriormente (generado un bucle infinito). Esta forma fue descartada, se siguo achicando el area de la misma forma pero en vez de pasarlo de vuelta por la funcion se pasan a otro array y se ordena por x y se prueba cada pareja para encontrar una pareja de ciudades mas cercana, para que no sea tan lento se aplican ciertas podas.
 
+### Justificacion de Ordenes
+
+El orden seria O((N log(N)) + (2N * N log(N)))
+
+
+## Ejercicio 9
+
+### solucion
+
+tomo todos los datos de los jugadores, creo la matriz de cuadro dimension sindo la primera coordena los jugadores considerados, la seunda el presupuesto, cantidad de extrajeros habilitados y por ultimo cuantos jugadores iban a estar en la formacion final.
+primeri inserto el primer jugador para no tener que preocuparnos de el acceso i - 1, tom encueanta que no pueden aceptar mas jugadores extranjeros y no pueden pagarle el sueldo.
+
+### Justificacion de Ordenes
+
+orden de tiempo y espacio siend j * p * e * 11
+
+## Ejercicio 10 
+
+### solucion
+
+Lo primero que hago es ordenar las flores de mayor restriccion primero porque las quiero insertar primero para limitar mis opciones al ejecutar el backtracking, ademas inserto primero en los lugares que se pueden insertar menos flores por la misma razon dicha anteriormente, tambien tengo una matriz que me dice cuantas restricciones me impide plantar  una en ese en vez de fijarme alrededor, y por ultimo si ya plante 5 flores y me qudan vistar 3 celdas y mi maximo de flores planteadas  son 10 corto esa rama completamente porque no es posible superaro.
+
+La matriz con el numero de restricciones que me impide plantar esa flor es precarcado con las restricciones de la fila de las flores y cuando planto una flor marco alrederor que no se pudede plantar la flor sumandole 1 y hago lo contrario de enamrcadola.
+
+### Justificacion de Ordenes
+
+El orden seria O(N*Nlog(N * N) + F + N*N*2F + N*Nlog(N*N) + N * F)
+
+N dimension de la matriz y F cantidad de flores
+
+
 
 | Problema |    Resultado    |
 |:--------:|:---------------:|
@@ -168,6 +178,6 @@ El metodo de resolucion de la linea divisoria es aumentar el low y reducir el hi
 |     6    |     Completo    |
 |     7    |     Completo    |
 |     8    |     Completo    |
-|     9    | No Implementado |
-|    10    | No Implementado |
+|     9    |     Completo    |
+|    10    |     Completo    |
 |          |                 |

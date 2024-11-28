@@ -38,10 +38,17 @@ def main():
     program_name, *argv = sys.argv
 
     if len(argv) == 0:
-        print(f'Uso: {program_name} [1..10]')
-        print('ERROR: Numero de ejercicio no ingresado')
-        exit(1)
-    
+        for i in range(1, 11):
+            start = time.perf_counter()
+            dir_list = sorted(os.listdir(f"Prueba/ejercicio{i}"))
+            c = filter(inFilter, dir_list)
+            for s in c:
+                runTest(i, s.split(".")[0])
+            end = time.perf_counter()
+            print(f"")
+            print(f"Ejercio {i}: Duro {(end - start):.6f} seconds")
+            print(f"")
+            exit(0);
     ej = int(argv[0])
 
     if ej <= 0 or ej > 10:
