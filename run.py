@@ -48,7 +48,7 @@ def main():
             print(f"")
             print(f"Ejercio {i}: Duro {(end - start):.6f} seconds")
             print(f"")
-            exit(0);
+        exit(0);
     ej = int(argv[0])
 
     if ej <= 0 or ej > 10:
